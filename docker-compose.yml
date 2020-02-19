@@ -1,0 +1,48 @@
+version: "3"
+
+services:
+  api:
+    container_name: disc_app_api
+    build: ./api
+    volumes:
+      - ./api:/go/src/app
+    ports:
+      - "8081:8081"
+    links:
+        - db
+    networks:
+      discussion_connect:
+        ipv4_address: 172.25.0.4
+  db:
+    image: mysql:5.7
+    container_name: disc_app_db
+    volumes:
+      - "/var/lib/mysql"
+    environment:
+      MYSQL_ROOT_PASSWORD: pass4admin
+      MYSQL_DATABASE: disc_db
+      MYSQL_USER: disc_user
+      MYSQL_PASSWORD: pass4disc
+    ports:
+      - "3306:3306"
+    networks:
+      discussion_connect:
+        ipv4_address: 172.25.0.3
+  web:
+    container_name: disc_app_web
+    build: ./web
+    volumes:
+      - ./web:/app
+    ports:
+      - "8080:8080"
+    links:
+        - api
+    networks:
+      discussion_connect:
+        ipv4_address: 172.25.0.2
+networks:
+  discussion_connect:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.25.0.0/16
