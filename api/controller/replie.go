@@ -7,17 +7,19 @@ import (
 	"github.com/gorilla/mux"
 	"strconv"
 )
-const CONTENT_TYPE  = "content-type"
-const APPLICATION_JSON = "application/json"
-const ACCESS_CONTROL_ORIGIN  = "Access-Control-Allow-Origin"
-const ACCESS_CONTROL_HEADER = "Access-Control-Allow-Headers"
 
-//Get all threads
-func GetThreads(w http.ResponseWriter, r *http.Request) {
-	var thread model.Thread
+//Get all replies of a thread
+func GetRepliesByThread(w http.ResponseWriter, r *http.Request) {
+	var replie model.Replie
 
-	var output []*model.Thread
-	output = thread.GetAllThreads()
+	params := mux.Vars(r)
+
+	threadId := params["thread_id"]
+
+	threadIdInt, _ := strconv.Atoi(threadId)
+
+	var output []*model.Replie
+	output = replie.GetAllReplies(threadIdInt)
 
 	w.Header().Set(ACCESS_CONTROL_ORIGIN, "*")
     w.Header().Set(ACCESS_CONTROL_HEADER, CONTENT_TYPE)
@@ -27,20 +29,20 @@ func GetThreads(w http.ResponseWriter, r *http.Request) {
 }
 
 //Get single thread
-func GetThread(w http.ResponseWriter, r *http.Request) {
+func GetReplie(w http.ResponseWriter, r *http.Request) {
 	params := mux.Vars(r)
 
-	threadId := params["id"]
+	replieId := params["id"]
 
-	var output model.Thread
-	output = output.GetThread(threadId)
+	var output model.Replie
+	output = output.GetReplie(replieId)
 
 	w.Header().Set(ACCESS_CONTROL_ORIGIN, "*")
     w.Header().Set(ACCESS_CONTROL_HEADER, CONTENT_TYPE)
 	w.Header().Set(CONTENT_TYPE, APPLICATION_JSON)
 
 	if output.ID == 0 {
-		m := "No thread found"
+		m := "No replie found"
 		w.WriteHeader(http.StatusInternalServerError)
 		json.NewEncoder(w).Encode(m)
 	} else {
@@ -49,58 +51,58 @@ func GetThread(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-//Create thread
-func CreateThread(w http.ResponseWriter, r *http.Request) {
-	var thread model.Thread
+//Create replie
+func CreateReplie(w http.ResponseWriter, r *http.Request) {
+	var replie model.Replie
 
-	json.NewDecoder(r.Body).Decode(&thread)
+	json.NewDecoder(r.Body).Decode(&replie)
 
-	thread.CreateThread()
+	replie.CreateReplie()
 
 	w.Header().Set(ACCESS_CONTROL_ORIGIN, "*")
     w.Header().Set(ACCESS_CONTROL_HEADER, CONTENT_TYPE)
 	w.Header().Set(CONTENT_TYPE, APPLICATION_JSON)
 
-	if thread.ID != 0 {
+	if replie.ID != 0 {
 		w.WriteHeader(http.StatusOK)
-		json.NewEncoder(w).Encode(thread)
+		json.NewEncoder(w).Encode(replie)
 	}else{
-		m := "Fail in thread creation"
+		m := "Fail in replie creation"
 		w.WriteHeader(http.StatusInternalServerError)
 		json.NewEncoder(w).Encode(m)
 	}
 }
 
-//Update thread
-func UpdateThread(w http.ResponseWriter, r *http.Request) {
-	var thread model.Thread
+//Update replie
+func UpdateReplie(w http.ResponseWriter, r *http.Request) {
+	var replie model.Replie
 
-	json.NewDecoder(r.Body).Decode(&thread)
+	json.NewDecoder(r.Body).Decode(&replie)
 
 	params := mux.Vars(r)
 
-	threadId := params["id"]
+	replieId := params["id"]
 
-	thread.ID, _ = strconv.Atoi(threadId)
+	replie.ID, _ = strconv.Atoi(replieId)
 
-	thread.UpdateThread()
+	replie.UpdateReplie()
 
 	w.Header().Set(ACCESS_CONTROL_ORIGIN, "*")
     w.Header().Set(ACCESS_CONTROL_HEADER, CONTENT_TYPE)
 	w.Header().Set(CONTENT_TYPE, APPLICATION_JSON)
 
-	if thread.ID != 0 {
+	if replie.ID != 0 {
 		w.WriteHeader(http.StatusOK)
-		json.NewEncoder(w).Encode(thread)
+		json.NewEncoder(w).Encode(replie)
 	}else{
-		m := "Fail in thread update"
+		m := "Fail in replie update"
 		w.WriteHeader(http.StatusInternalServerError)
 		json.NewEncoder(w).Encode(m)
 	}
 }
 
-//Delete thread
-func DeleteThread(w http.ResponseWriter, r *http.Request) {
+//Delete replie
+func DeleteReplie(w http.ResponseWriter, r *http.Request) {
 	//Missing implementation
 }
 

@@ -20,6 +20,12 @@ func main() {
 	r.HandleFunc("/api/threads/{id}", controller.UpdateThread).Methods("PUT")
 	r.HandleFunc("/api/threads/{id}", controller.DeleteThread).Methods("DELETE")
 
+	r.HandleFunc("/api/replies/thread/{thread_id}", controller.GetRepliesByThread).Methods("GET")
+	r.HandleFunc("/api/replies/{id}", controller.GetReplie).Methods("GET")
+	r.HandleFunc("/api/replies", controller.CreateReplie).Methods("POST")
+	r.HandleFunc("/api/replies/{id}", controller.UpdateReplie).Methods("PUT")
+	r.HandleFunc("/api/replies/{id}", controller.DeleteReplie).Methods("DELETE")
+
 	http.Handle("/", r)
 	fmt.Println("Starting up on 8081")
 	log.Fatal(http.ListenAndServe(":8081", nil))

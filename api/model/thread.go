@@ -86,8 +86,6 @@ func (thread *Thread) CreateThread() {
 		return
 	}
 
-	log.Println(thread.Title)
-
 	defer db.Close()
 	
 	result, err := db.Exec("INSERT INTO threads(title, description) VALUES (?,?)", thread.Title, thread.Description)
@@ -102,5 +100,21 @@ func (thread *Thread) CreateThread() {
         } else {
             thread.ID = int(id)
         }
+    }
+}
+
+func (thread *Thread) UpdateThread() {
+
+	db, err := config.Open()
+
+	if err != nil {
+		log.Println(err)
+		return
+	}
+
+	defer db.Close()
+	_, execErr := db.Exec("UPDATE threads SET title = ?, description = ? WHERE thread_id = ?", thread.Title, thread.Description, thread.ID)
+    if execErr != nil {
+		log.Println(execErr)
     }
 }
