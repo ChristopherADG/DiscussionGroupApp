@@ -53,52 +53,67 @@ func GetReplie(w http.ResponseWriter, r *http.Request) {
 
 //Create replie
 func CreateReplie(w http.ResponseWriter, r *http.Request) {
-	var replie model.Replie
 
-	json.NewDecoder(r.Body).Decode(&replie)
+	parentId := r.FormValue("threadParent_id")
+	content := r.FormValue("content")
 
-	replie.CreateReplie()
+	if content != "" {
+		var replie model.Replie
 
-	w.Header().Set(ACCESS_CONTROL_ORIGIN, "*")
-    w.Header().Set(ACCESS_CONTROL_HEADER, CONTENT_TYPE)
-	w.Header().Set(CONTENT_TYPE, APPLICATION_JSON)
+		replie.ThreadParent_id,_ = strconv.Atoi(parentId)
 
-	if replie.ID != 0 {
-		w.WriteHeader(http.StatusOK)
-		json.NewEncoder(w).Encode(replie)
-	}else{
-		m := "Fail in replie creation"
-		w.WriteHeader(http.StatusInternalServerError)
-		json.NewEncoder(w).Encode(m)
+		replie.Content = content
+	
+		w.Header().Set(ACCESS_CONTROL_ORIGIN, "*")
+    	w.Header().Set(ACCESS_CONTROL_HEADER, CONTENT_TYPE)
+		w.Header().Set(CONTENT_TYPE, APPLICATION_JSON)
+
+		replie.CreateReplie()
+
+		if replie.ID != 0 {
+			w.WriteHeader(http.StatusOK)
+			json.NewEncoder(w).Encode(replie)
+			return
+		}
 	}
+	m := "Fail in replie create"
+	w.WriteHeader(http.StatusInternalServerError)
+	json.NewEncoder(w).Encode(m)
 }
 
 //Update replie
 func UpdateReplie(w http.ResponseWriter, r *http.Request) {
-	var replie model.Replie
-
-	json.NewDecoder(r.Body).Decode(&replie)
-
 	params := mux.Vars(r)
 
 	replieId := params["id"]
 
-	replie.ID, _ = strconv.Atoi(replieId)
+	parentId := r.FormValue("threadParent_id")
+	content := r.FormValue("content")
 
-	replie.UpdateReplie()
+	if content != "" {
+		var replie model.Replie
 
-	w.Header().Set(ACCESS_CONTROL_ORIGIN, "*")
-    w.Header().Set(ACCESS_CONTROL_HEADER, CONTENT_TYPE)
-	w.Header().Set(CONTENT_TYPE, APPLICATION_JSON)
+		replie.ID, _ = strconv.Atoi(replieId)
 
-	if replie.ID != 0 {
-		w.WriteHeader(http.StatusOK)
-		json.NewEncoder(w).Encode(replie)
-	}else{
-		m := "Fail in replie update"
-		w.WriteHeader(http.StatusInternalServerError)
-		json.NewEncoder(w).Encode(m)
+		replie.ThreadParent_id,_ = strconv.Atoi(parentId)
+
+		replie.Content = content
+	
+		w.Header().Set(ACCESS_CONTROL_ORIGIN, "*")
+    	w.Header().Set(ACCESS_CONTROL_HEADER, CONTENT_TYPE)
+		w.Header().Set(CONTENT_TYPE, APPLICATION_JSON)
+
+		replie.UpdateReplie()
+
+		if replie.ID != 0 {
+			w.WriteHeader(http.StatusOK)
+			json.NewEncoder(w).Encode(replie)
+			return
+		}
 	}
+	m := "Fail in replie update"
+	w.WriteHeader(http.StatusInternalServerError)
+	json.NewEncoder(w).Encode(m)
 }
 
 //Delete replie
