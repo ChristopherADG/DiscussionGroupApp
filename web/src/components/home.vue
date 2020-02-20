@@ -5,12 +5,16 @@
         <img class="avatar" width="70" height="70" />
       </div>
       <div class="NewTweetBody">
-        <input class="testNewTweet" placeholder="What's happening?" />
+        <input
+          v-model="newTweet"
+          class="testNewTweet"
+          placeholder="What's happening?"
+        />
       </div>
-      <div><button>Submit</button></div>
+      <div><button v-on:click="createTweet()">Submit</button></div>
     </div>
 
-    <div v-for="tweet in feed" :key="tweet.title" class="tweet">
+    <div v-for="tweet in feed" :key="tweet.thread_id" class="tweet">
       <div class="avatarContainer">
         <img :src="tweet.avatar" class="avatar" width="70" height="70" />
       </div>
@@ -35,7 +39,8 @@ export default {
   data() {
     return {
       feed: [],
-      comments: []
+      comments: [],
+      newTweet: ""
     };
   },
   mounted() {
@@ -43,6 +48,21 @@ export default {
       // JSON responses are automatically parsed.
       this.feed = response.data;
     });
+  },
+  methods: {
+    createTweet() {
+      if (this.newTweet !== "") {
+        axios({
+          method: "post",
+          url: "http://localhost:8081/api/threads",
+          data: {
+            title: "Fred",
+            description: "Flintstone"
+          }
+        });
+      }
+      console.log("hey");
+    }
   }
 };
 </script>
