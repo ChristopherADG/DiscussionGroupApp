@@ -1,28 +1,128 @@
 <template>
   <div id="app">
-    <img alt="Vue logo" src="./assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
+    <!-- <img alt="Vue logo" src="./assets/logo.png" /> -->
+    <!-- <HelloWorld msg="Welcome to Your Vue.js App"/> -->
+    <div id="twitter">
+      <header>
+        <div class="inner">
+          <div class="headerSection">
+            <router-link to="/home" class="link">Home</router-link>
+          </div>
+          <div class="headerSection"></div>
+          <div class="headerSection">
+            <button class="tweetLink">Tweet</button>
+          </div>
+        </div>
+      </header>
+
+      <router-view></router-view>
+    </div>
+    <Home />
   </div>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
+import HelloWorld from "./components/HelloWorld.vue";
+import Home from "./components/home.vue";
 
 export default {
-  name: 'App',
+  name: "App",
   components: {
-    HelloWorld
+    HelloWorld,
+    Home
   }
-}
+};
 </script>
 
 <style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+body {
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  background-color: #e6ecf0;
+  margin: 0;
+}
+
+#twitter {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.tweet {
+  display: flex;
+  background-color: #fff;
+  width: 65%;
+  max-width: 900px;
+  min-height: 110px;
+  padding: 10px 20px;
+  border-bottom: 1px solid #e6ecf0;
+  margin: 0 auto;
+}
+
+.newtweet {
+  min-height: 150px;
+}
+
+header {
+  width: 100%;
+  height: 57px;
+  line-height: 55px;
+  margin-bottom: 10px;
+  border-bottom: 1px solid #e5eff5;
+}
+
+header .inner {
+  max-width: 65%;
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.headerSection {
+  width: 33%;
   text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
+}
+
+.headerSection:first-child {
+  display: flex;
+  justify-content: center;
+}
+
+header .link {
+  color: #1da1f2;
+  width: 50px;
+  border-bottom: 2px solid #1c94e0;
+  text-decoration: unset;
+  display: block;
+  font-weight: bold;
+  padding: 0 15px;
+}
+
+.search {
+  align-self: center;
+  width: 200px;
+  height: 35px;
+  padding: 10px;
+  background-color: #f5f8fa;
+  border-radius: 21px;
+  border: 1px solid #e6ecf0;
+  box-sizing: border-box;
+  color: #14171a;
+  outline: 0;
+}
+
+.tweetLink {
+  background-color: #1da1f2;
+  border: 1px solid #1da1f2;
+  color: #fff;
+  text-decoration: none;
+  border-radius: 100px;
+  padding: 6px 16px;
+  margin-left: 15px;
+}
+
+.tweetLink:hover {
+  background-color: #006dbf;
+  border-color: #006dbf;
 }
 </style>
