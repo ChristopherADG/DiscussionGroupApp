@@ -9,6 +9,8 @@ import (
 )
 const CONTENT_TYPE  = "content-type"
 const APPLICATION_JSON = "application/json"
+const ACCESS_CONTROL_ORIGIN  = "Access-Control-Allow-Origin"
+const ACCESS_CONTROL_HEADER = "Access-Control-Allow-Headers"
 
 //Get all threads
 func GetThreads(w http.ResponseWriter, r *http.Request) {
@@ -17,6 +19,8 @@ func GetThreads(w http.ResponseWriter, r *http.Request) {
 	var output []*model.Thread
 	output = thread.GetAllThreads()
 
+	w.Header().Set(ACCESS_CONTROL_ORIGIN, "*")
+    w.Header().Set(ACCESS_CONTROL_HEADER, CONTENT_TYPE)
 	w.Header().Set(CONTENT_TYPE, APPLICATION_JSON)
 	w.WriteHeader(http.StatusOK)
 	json.NewEncoder(w).Encode(output)
@@ -31,6 +35,8 @@ func GetThread(w http.ResponseWriter, r *http.Request) {
 	var output model.Thread
 	output = output.GetThread(threadId)
 
+	w.Header().Set(ACCESS_CONTROL_ORIGIN, "*")
+    w.Header().Set(ACCESS_CONTROL_HEADER, CONTENT_TYPE)
 	w.Header().Set(CONTENT_TYPE, APPLICATION_JSON)
 
 	if output.ID == 0 {
@@ -51,6 +57,8 @@ func CreateThread(w http.ResponseWriter, r *http.Request) {
 
 	thread.CreateThread()
 
+	w.Header().Set(ACCESS_CONTROL_ORIGIN, "*")
+    w.Header().Set(ACCESS_CONTROL_HEADER, CONTENT_TYPE)
 	w.Header().Set(CONTENT_TYPE, APPLICATION_JSON)
 
 	if thread.ID != 0 {
@@ -77,6 +85,8 @@ func UpdateThread(w http.ResponseWriter, r *http.Request) {
 
 	thread.UpdateThread()
 
+	w.Header().Set(ACCESS_CONTROL_ORIGIN, "*")
+    w.Header().Set(ACCESS_CONTROL_HEADER, CONTENT_TYPE)
 	w.Header().Set(CONTENT_TYPE, APPLICATION_JSON)
 
 	if thread.ID != 0 {

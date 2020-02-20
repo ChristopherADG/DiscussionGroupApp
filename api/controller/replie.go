@@ -21,6 +21,8 @@ func GetRepliesByThread(w http.ResponseWriter, r *http.Request) {
 	var output []*model.Replie
 	output = replie.GetAllReplies(threadIdInt)
 
+	w.Header().Set(ACCESS_CONTROL_ORIGIN, "*")
+    w.Header().Set(ACCESS_CONTROL_HEADER, CONTENT_TYPE)
 	w.Header().Set(CONTENT_TYPE, APPLICATION_JSON)
 	w.WriteHeader(http.StatusOK)
 	json.NewEncoder(w).Encode(output)
@@ -35,6 +37,8 @@ func GetReplie(w http.ResponseWriter, r *http.Request) {
 	var output model.Replie
 	output = output.GetReplie(replieId)
 
+	w.Header().Set(ACCESS_CONTROL_ORIGIN, "*")
+    w.Header().Set(ACCESS_CONTROL_HEADER, CONTENT_TYPE)
 	w.Header().Set(CONTENT_TYPE, APPLICATION_JSON)
 
 	if output.ID == 0 {
@@ -55,6 +59,8 @@ func CreateReplie(w http.ResponseWriter, r *http.Request) {
 
 	replie.CreateReplie()
 
+	w.Header().Set(ACCESS_CONTROL_ORIGIN, "*")
+    w.Header().Set(ACCESS_CONTROL_HEADER, CONTENT_TYPE)
 	w.Header().Set(CONTENT_TYPE, APPLICATION_JSON)
 
 	if replie.ID != 0 {
@@ -81,6 +87,8 @@ func UpdateReplie(w http.ResponseWriter, r *http.Request) {
 
 	replie.UpdateReplie()
 
+	w.Header().Set(ACCESS_CONTROL_ORIGIN, "*")
+    w.Header().Set(ACCESS_CONTROL_HEADER, CONTENT_TYPE)
 	w.Header().Set(CONTENT_TYPE, APPLICATION_JSON)
 
 	if replie.ID != 0 {
