@@ -17,6 +17,36 @@
       <div class="column menuTweets">
         <div class="sectionTitle"><p>Home</p></div>
         <div class="columns sectionTweets">
+          <div class="tweet newTweet">
+            <div class="column is-2 avatar">
+              <i class="far fa-user-circle fa-4x"></i>
+            </div>
+            <div class="column infoTweet">
+              <div class="messageTweet">
+                <input
+                  class="input titleTweet"
+                  type="text"
+                  placeholder="Title"
+                  v-model="newTweet.title"
+                />
+                <input
+                  class="input"
+                  type="text"
+                  placeholder="Description"
+                  v-model="newTweet.description"
+                />
+              </div>
+              <div class="sectionSubmit sectionIcons">
+                <button
+                  :disabled="sendTweet"
+                  v-on:click="saveTweet()"
+                  class="button is-link is-rounded"
+                >
+                  Tweet
+                </button>
+              </div>
+            </div>
+          </div>
           <div
             v-for="tweet in tweets"
             v-bind:key="tweet.thread_id"
@@ -27,8 +57,11 @@
             </div>
             <div class="column infoTweet">
               <div class="userName">
-                <p class="name">User</p>
-                <p class="user">@user</p>
+                <div style="display:flex">
+                  <p class="name">User</p>
+                  <p class="user">@user</p>
+                </div>
+                <i class="fas fa-pen" v-on:click="openModal(tweet)"></i>
               </div>
               <div class="messageTweet">
                 <p class="titleTweet">{{ tweet.title }}</p>
@@ -75,23 +108,38 @@
         </article>
       </div>
     </div>
-
-    <!-- <div id="twitter">
-      <header>
-        <div class="inner">
-          <div class="headerSection">
-            <router-link to="/home" class="link">Home</router-link>
+    <div class="modal" :class="{ 'is-active': showModal }">
+      <div class="modal-background"></div>
+      <div class="modal-card">
+        <header class="modal-card-head">
+          <i class="fas fa-times fa-2x" v-on:click="closeModal()"></i>
+        </header>
+        <section class="modal-card-body">
+          <div class="infoTweet">
+            <div class="messageTweet">
+              <input
+                class="input titleTweet"
+                type="text"
+                placeholder="Title"
+                v-model="editedTweet.title"
+              />
+              <input
+                class="input"
+                type="text"
+                placeholder="Description"
+                v-model="editedTweet.description"
+              />
+            </div>
           </div>
-          <div class="headerSection"></div>
-          <div class="headerSection">
-            <button class="tweetLink">Tweet</button>
-          </div>
-        </div>
-      </header>
-
-      <router-view></router-view>
+        </section>
+        <footer class="modal-card-foot">
+          <button class="button is-success" v-on:click="updateTweet()">
+            Save changes
+          </button>
+          <button class="button" v-on:click="closeModal()">Cancel</button>
+        </footer>
+      </div>
     </div>
-    <Home /> -->
   </div>
 </template>
 
@@ -110,14 +158,71 @@ export default {
     return {
       tweets: [],
       comments: [],
-      newTweet: ""
+      newTweet: "",
+      showModal: false,
+      newTweet: {
+        title: "",
+        description: ""
+      },
+      editedTweet: {
+        id: 0,
+        title: "",
+        description: ""
+      }
     };
   },
   mounted() {
     axios.get("http://localhost:8081/api/threads").then(response => {
       // JSON responses are automatically parsed.
-      this.tweets = response.data;
+
+      this.tweets = response.data.reverse();
     });
+  },
+  computed: {
+    // a computed getter
+    sendTweet: function() {
+      if (this.newTweet.title !== "" && this.newTweet.description !== "") {
+        return false;
+      } else {
+        return true;
+      }
+    }
+  },
+  methods: {
+    openModal(tweet) {
+      this.showModal = true;
+      this.editedTweet.id = tweet.thread_id;
+      this.editedTweet.title = tweet.title;
+      this.editedTweet.description = tweet.description;
+    },
+    closeModal() {
+      this.showModal = false;
+      this.editedTweet.id = 0;
+      this.editedTweet.title = "";
+      this.editedTweet.description = "";
+    },
+    saveTweet() {
+      // const form = new FormData();
+      // form.append("title", this.newTweet.title);
+      // form.append("description", this.newTweet.description);
+      // axios.post("http://localhost:8081/api/threads", form);
+      // axios.get("http://localhost:8081/api/threads").then(response => {
+      //   this.tweets = response.data.reverse();
+      // });
+    },
+    updateTweet() {
+      // const form = new FormData();
+      // form.append("thread_id", this.editedTweet.thread_id);
+      // form.append("title", this.editedTweet.title);
+      // form.append("description", this.editedTweet.description);
+      // axios.put("http://localhost:8081/api/threads", form);
+      // axios.get("http://localhost:8081/api/threads").then(response => {
+      //   this.tweets = response.data.reverse();
+      // });
+      // this.editedTweet.id = 0;
+      // this.editedTweet.title = "";
+      // this.editedTweet.description = "";
+    }
   }
 };
 </script>
@@ -198,8 +303,16 @@ export default {
   color: rgb(136, 153, 166);
 }
 
+.menuTweets .sectionTweets .newTweet {
+  border-bottom: 10px solid rgb(37, 51, 65);
+}
+
 .menuTweets .sectionTweets .infoTweet {
   text-align: left;
+}
+
+.menuTweets .sectionTweets .infoTweet .sectionSubmit .is-rounded {
+  background-color: rgb(29, 161, 242);
 }
 
 .messageTweet {
@@ -210,6 +323,19 @@ export default {
 
 .messageTweet p {
   color: white;
+}
+
+.messageTweet input {
+  background-color: transparent;
+  border-top-style: hidden;
+  border-right-style: hidden;
+  border-left-style: hidden;
+  border-bottom-style: hidden;
+  color: white;
+}
+
+.messageTweet input::placeholder {
+  color: rgb(56, 68, 77);
 }
 
 .messageTweet .titleTweet {
@@ -232,6 +358,14 @@ export default {
 .menuTweets .sectionTweets .infoTweet .userName {
   display: flex;
   color: white;
+  justify-content: space-between;
+}
+.menuTweets .sectionTweets .infoTweet .userName i {
+  padding-right: 25px;
+  align-self: center;
+}
+.menuTweets .sectionTweets .infoTweet .userName i:hover {
+  cursor: pointer;
 }
 .menuTweets .sectionTweets .infoTweet .userName p {
   padding-right: 10px;
@@ -280,5 +414,34 @@ export default {
 
 #app .panel .panel-block:hover {
   background-color: #20303e;
+}
+
+#app .modal-background {
+  background-color: rgba(110, 118, 125, 0.4);
+}
+
+#app .modal-card-head {
+  background-color: rgb(21, 32, 43);
+  border-bottom: 0px;
+  border-bottom: 1px solid rgb(61, 84, 102);
+}
+
+#app .modal-card-head i {
+  color: rgba(29, 161, 242, 1);
+}
+
+#app .modal-card-head i:hover {
+  cursor: pointer;
+}
+
+#app .modal-card-body {
+  background-color: rgb(21, 32, 43);
+}
+#app .modal-card-foot {
+  background-color: rgb(21, 32, 43);
+  border-top: 0px;
+}
+#app .modal-card-foot .is-success {
+  background-color: rgba(29, 161, 242, 1);
 }
 </style>
