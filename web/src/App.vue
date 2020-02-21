@@ -48,23 +48,25 @@
             </div>
           </div>
           <div v-for="tweet in tweets" v-bind:key="tweet.thread_id" class="tweet">
-            <div class="column is-2 avatar">
-              <i class="far fa-user-circle fa-4x"></i>
-            </div>
-            <div class="column infoTweet">
-              <div class="userName">
-                <div style="display:flex">
-                  <p class="name">User</p>
-                  <p class="user">@user</p>
+            <div style="display: flex; width: 100%;">
+              <div class="column is-2 avatar">
+                <i class="far fa-user-circle fa-4x"></i>
+              </div>
+              <div class="column infoTweet">
+                <div class="userName">
+                  <div style="display:flex">
+                    <p class="name">User</p>
+                    <p class="user">@user</p>
+                  </div>
+                  <i class="fas fa-pen" v-on:click="openModal(tweet)"></i>
                 </div>
-                <i class="fas fa-pen" v-on:click="openModal(tweet)"></i>
-              </div>
-              <div class="messageTweet">
-                <p class="titleTweet">{{ tweet.title }}</p>
-                <p>{{ tweet.description }}</p>
-              </div>
-              <div class="sectionIcons">
-                <i class="far fa-comment fa-1x" v-on:click="openComments(tweet)"></i>
+                <div class="messageTweet">
+                  <p class="titleTweet">{{ tweet.title }}</p>
+                  <p>{{ tweet.description }}</p>
+                </div>
+                <div class="sectionIcons">
+                  <i class="far fa-comment fa-1x" v-on:click="openComments(tweet)"></i>
+                </div>
               </div>
             </div>
           </div>
@@ -267,8 +269,11 @@ export default {
         .get(`http://localhost:8081/api/replies/thread/${tweet.thread_id}`)
         .then(response => {
           // JSON responses are automatically parsed.
-
-          this.comments = response.data.reverse();
+          if (response.data == null) {
+            this.comments = [];
+          } else {
+            this.comments = response.data;
+          }
         });
       // this.editedTweet.id = tweet.thread_id;
       // this.editedTweet.title = tweet.title;
@@ -313,6 +318,26 @@ export default {
     },
     saveReply() {
       console.log(this.newReply);
+      console.log(this.selectedTweet);
+      const form = new FormData();
+      form.append("threadParent_id", this.selectedTweet.id);
+      form.append("content", this.newReply);
+      axios.post("http://localhost:8081/api/replies", form).then(response => {
+        axios
+          .get(
+            `http://localhost:8081/api/replies/thread/${this.selectedTweet.id}`
+          )
+          .then(response => {
+            // JSON responses are automatically parsed.
+            if (response.data == null) {
+              this.comments = [];
+            } else {
+              this.comments = response.data;
+              this.newReply = "";
+            }
+          });
+      });
+
       // const form = new FormData();
       // form.append("threadParent_id", this.selectedTweet.thread_id);
       // form.append("content", this.newReply);
@@ -397,7 +422,7 @@ export default {
 }
 
 .sectionTweets .tweet {
-  display: flex;
+  /* display: flex; */
   height: fit-content;
   border-bottom: 1px solid rgb(56, 68, 77);
 }
@@ -407,6 +432,7 @@ export default {
 }
 
 .menuTweets .sectionTweets .newTweet {
+  display: flex;
   border-bottom: 10px solid rgb(37, 51, 65);
 }
 
