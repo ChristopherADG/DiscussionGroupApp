@@ -255,8 +255,13 @@
   width: 100%;
 }
 
-#app .repliesContainer i {
+#app .repliesContainer i.icon {
   color: rgb(136, 153, 166);
+}
+
+#app .repliesContainer button.send {
+  border-radius: 15%;
+  margin-left: 10%;
 }
 
 .repliesContainer .replyText {
