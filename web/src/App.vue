@@ -69,6 +69,38 @@
                 </div>
               </div>
             </div>
+            <div :id="tweet.thread_id" style="display:none">
+              <div
+                v-for="comment in comments"
+                v-bind:key="comment.replie_id"
+                class="columns is-gapless is-vcentered repliesContainer"
+              >
+                <div class="column is-1"></div>
+                <div class="column replyText">{{comment.content}}</div>
+                <div class="column is-2">
+                  <i class="fas fa-pen"></i>
+                </div>
+              </div>
+              <div>
+                <div class="columns is-gapless is-vcentered newReply">
+                  <div class="column is-1"></div>
+                  <div class="column">
+                    <div class="messageTweet">
+                      <input class="input" type="text" placeholder="New Reply" v-model="newReply" />
+                    </div>
+                  </div>
+                  <div class="column is-3">
+                    <div class="sectionSubmit sectionIcons">
+                      <button
+                        v-on:click="saveReply()"
+                        :disabled="sendReply"
+                        class="button is-link is-rounded"
+                      >Reply</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -132,58 +164,6 @@
         </footer>
       </div>
     </div>
-    <div class="modal modalComments" :class="{ 'is-active': showComments }">
-      <div class="modal-background"></div>
-      <div class="modal-card">
-        <header class="modal-card-head">
-          <i class="fas fa-times fa-2x" v-on:click="closeComments()"></i>
-        </header>
-        <section class="modal-card-body">
-          <div class="columns tweet newTweet">
-            <div class="column is-2 avatar">
-              <i class="far fa-user-circle fa-4x"></i>
-            </div>
-            <div class="column infoTweet">
-              <div class="messageTweet">
-                <p class="titleTweet">{{ selectedTweet.title }}</p>
-                <p>{{ selectedTweet.description }}</p>
-              </div>
-            </div>
-          </div>
-          <div class="columns" v-for="comment in comments" v-bind:key="comment.replie_id">
-            <div class="column is-1"></div>
-            <div class="column comentarioTweet">
-              <p :id="comment.replie_id">{{ comment.content }}</p>
-              <input
-                :id="comment.replie_id + 'editMode'"
-                class="input titleTweet"
-                style="display:none"
-                type="text"
-                v-model="comment.content"
-              />
-            </div>
-            <div class="column is-1">
-              <i class="fas fa-pen" v-if="editMode == false" v-on:click="openEditMode(comment)"></i>
-            </div>
-          </div>
-        </section>
-        <footer class="modal-card-foot">
-          <input
-            v-if="editMode == false"
-            class="input titleTweet"
-            type="text"
-            placeholder="Reply"
-            v-model="newReply"
-          />
-          <button v-if="editMode == false" class="button is-success" v-on:click="saveReply()">Reply</button>
-
-          <div v-if="editMode == true">
-            <button class="button is-success" v-on:click="updateReply()">Save changes</button>
-            <button class="button" v-on:click="exitEditMode()">Cancel</button>
-          </div>
-        </footer>
-      </div>
-    </div>
   </div>
 </template>
 
@@ -238,6 +218,13 @@ export default {
       } else {
         return true;
       }
+    },
+    sendReply: function() {
+      if (this.newReply !== "") {
+        return false;
+      } else {
+        return true;
+      }
     }
   },
   methods: {
@@ -261,27 +248,36 @@ export default {
       this.editedTweet.description = "";
     },
     openComments(tweet) {
-      this.showComments = true;
-      this.selectedTweet.id = tweet.thread_id;
-      this.selectedTweet.title = tweet.title;
-      this.selectedTweet.description = tweet.description;
-      axios
-        .get(`http://localhost:8081/api/replies/thread/${tweet.thread_id}`)
-        .then(response => {
-          // JSON responses are automatically parsed.
-          if (response.data == null) {
-            this.comments = [];
-          } else {
-            this.comments = response.data;
-          }
-        });
-      // this.editedTweet.id = tweet.thread_id;
-      // this.editedTweet.title = tweet.title;
-      // this.editedTweet.description = tweet.description;
+      this.closeComments();
+      const element = document.getElementById(tweet.thread_id);
+
+      if (element.style.display != "none") {
+        element.style.display = "none";
+      } else {
+        this.selectedTweet.id = tweet.thread_id;
+        this.selectedTweet.title = tweet.title;
+        this.selectedTweet.description = tweet.description;
+        axios
+          .get(`http://localhost:8081/api/replies/thread/${tweet.thread_id}`)
+          .then(response => {
+            // JSON responses are automatically parsed.
+            if (response.data == null) {
+              this.comments = [];
+            } else {
+              this.comments = response.data;
+            }
+          });
+        element.style.display = "block";
+      }
     },
     closeComments() {
-      this.showComments = false;
       this.newReply = "";
+      for (let i = 0; i <= this.tweets.length - 1; i++) {
+        const item = document.getElementById(this.tweets[i].thread_id);
+        if (item !== null) {
+          item.style.display = "none";
+        }
+      }
       // this.editedTweet.id = 0;
       // this.editedTweet.title = "";
       // this.editedTweet.description = "";

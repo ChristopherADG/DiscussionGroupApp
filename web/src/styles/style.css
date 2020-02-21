@@ -257,3 +257,29 @@
   color: rgb(56, 68, 77);
   font-weight: bold;
 }
+
+#app .repliesContainer {
+  background-color: #182735;
+  color: white;
+  min-height: 60px;
+  margin-bottom: 10px;
+  width: 100%;
+}
+
+#app .repliesContainer i {
+  color: rgb(136, 153, 166);
+}
+
+.repliesContainer .replyText {
+  text-align: left;
+  font-size: 18px;
+  padding: auto;
+}
+
+.newReply {
+  padding-bottom: 15px;
+}
+
+#app .newReply .is-rounded {
+  background-color: rgb(29, 161, 242);
+}
