@@ -4,9 +4,7 @@
     <!-- <HelloWorld msg="Welcome to Your Vue.js App"/> -->
     <nav class="navbar" role="navigation" aria-label="main navigation">
       <div class="navbar-brand">
-        <a class="navbar-item" href="https://bulma.io">
-          <img src="https://bulma.io/images/bulma-logo.png" width="112" height="28" />
-        </a>
+        <img src="./assets/logoBird.png" style="margin-top: 2px;height: 48px;" />
       </div>
     </nav>
     <br />
@@ -40,7 +38,7 @@
                           class="textarea"
                           type="text"
                           placeholder="Text"
-                          rows="3"
+                          rows="2"
                           v-model="newTweet.description"
                         />
                       </div>
@@ -76,14 +74,13 @@
                       </div>
                     </div>
                     <div class="media-right">
-                      <i style="cursor: pointer;" class="fas fa-pen" v-on:click="openModal(tweet)"></i>
+                      <button class="button is-white" v-on:click="openModal(tweet)">
+                        <i style="cursor: pointer;" class="fas fa-pen"></i>
+                      </button>
                       <br />
-                      <br />
-                      <i
-                        style="cursor: pointer;"
-                        class="far fa-comment fa-1x"
-                        v-on:click="openComments(tweet)"
-                      ></i>
+                      <button class="button is-white" v-on:click="openComments(tweet)">
+                        <i style="cursor: pointer;" class="far fa-comment fa-1x"></i>
+                      </button>
                     </div>
                   </div>
                   <div :id="tweet.thread_id" style="display:none">
@@ -95,7 +92,9 @@
                       <div class="column is-1"></div>
                       <div class="column replyText">- {{comment.content}}</div>
                       <div class="column is-2">
-                        <i class="fas fa-pen" v-on:click="openModelComment(comment)"></i>
+                        <button class="button is-light" v-on:click="openModelComment(comment)">
+                          <i class="fas fa-pen icon" style="cursor: pointer;"></i>
+                        </button>
                       </div>
                     </div>
                     <div>
@@ -111,11 +110,9 @@
                             <button
                               v-on:click="saveReply()"
                               :disabled="sendReply"
-                              class="button is-link is-outlined"
+                              class="button is-link is-outlined send"
                             >
-                              <span class="icon has-text-info">
-                                <i class="fas fa-paper-plane"></i>
-                              </span>
+                              <i class="fas fa-comment-dots"></i>
                             </button>
                           </div>
                         </div>
@@ -185,7 +182,7 @@
                       class="textarea"
                       type="text"
                       placeholder="Text"
-                      rows="3"
+                      rows="2"
                       v-model="editedTweet.description"
                     />
                   </div>
