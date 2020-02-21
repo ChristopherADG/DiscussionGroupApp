@@ -2,169 +2,202 @@
   <div id="app">
     <!-- <img alt="Vue logo" src="./assets/logo.png" /> -->
     <!-- <HelloWorld msg="Welcome to Your Vue.js App"/> -->
-    <div class="columns">
-      <div class="column is-3 menuPrincipal">
-        <div class="menuPrincipalContainer">
-          <i class="fas fa-users fa-2x white" style="color: white;"></i>
-          <div class="buttonsMenu">
-            <div class="containerButton">
-              <i class="fas fa-home fa-2x"></i>
-              <p>Home</p>
-            </div>
-          </div>
-        </div>
+    <nav class="navbar" role="navigation" aria-label="main navigation">
+      <div class="navbar-brand">
+        <a class="navbar-item" href="https://bulma.io">
+          <img src="https://bulma.io/images/bulma-logo.png" width="112" height="28" />
+        </a>
       </div>
-      <div class="column menuTweets">
-        <div class="sectionTitle">
-          <p>Home</p>
-        </div>
-        <div class="columns sectionTweets">
-          <div class="tweet newTweet">
-            <div class="column is-2 avatar">
-              <i class="far fa-user-circle fa-4x"></i>
-            </div>
-            <div class="column infoTweet">
-              <div class="messageTweet">
-                <input
-                  class="input titleTweet"
-                  type="text"
-                  placeholder="Title"
-                  v-model="newTweet.title"
-                />
-                <input
-                  class="input"
-                  type="text"
-                  placeholder="Description"
-                  v-model="newTweet.description"
-                />
-              </div>
-              <div class="sectionSubmit sectionIcons">
-                <button
-                  :disabled="sendTweet"
-                  v-on:click="saveTweet()"
-                  class="button is-link is-rounded"
-                >Tweet</button>
-              </div>
-            </div>
-          </div>
-          <div v-for="tweet in tweets" v-bind:key="tweet.thread_id" class="tweet">
-            <div style="display: flex; width: 100%;">
-              <div class="column is-2 avatar">
-                <i class="far fa-user-circle fa-4x"></i>
-              </div>
-              <div class="column infoTweet">
-                <div class="userName">
-                  <div style="display:flex">
-                    <p class="name">User</p>
-                    <p class="user">@user</p>
+    </nav>
+    <br />
+    <div class="container">
+      <div class="columns">
+        <div class="column is-3 menuPrincipal"></div>
+        <div class="column menuTweets">
+          <div class="sectionTweets">
+            <div id="newTweet" class="card">
+              <div class="card-content newTweetCard">
+                <div class="media">
+                  <div class="media-left">
+                    <figure class="image is-32x32">
+                      <img
+                        alt="Image"
+                        src="http://qtwitter-demo.qcode.in/img/avatar-placeholder.svg"
+                        style="border-radius: 50%"
+                      />
+                    </figure>
                   </div>
-                  <i class="fas fa-pen" v-on:click="openModal(tweet)"></i>
-                </div>
-                <div class="messageTweet">
-                  <p class="titleTweet">{{ tweet.title }}</p>
-                  <p>{{ tweet.description }}</p>
-                </div>
-                <div class="sectionIcons">
-                  <i class="far fa-comment fa-1x" v-on:click="openComments(tweet)"></i>
-                </div>
-              </div>
-            </div>
-            <div :id="tweet.thread_id" style="display:none">
-              <div
-                v-for="comment in comments"
-                v-bind:key="comment.replie_id"
-                class="columns is-gapless is-vcentered repliesContainer"
-              >
-                <div :id="comment.replie_id+'comment'" class="showComment">
-                  <div class="column is-1"></div>
-                  <div class="column replyText">{{comment.content}}</div>
-                  <i class="column is-2">
-                    <i class="fas fa-pen" v-on:click="openModelComment(comment)"></i>
-                  </i>
-                </div>
-              </div>
-
-              <div>
-                <div class="columns is-gapless is-vcentered newReply">
-                  <div class="column is-1"></div>
-                  <div class="column">
-                    <div class="messageTweet">
-                      <input class="input" type="text" placeholder="New Reply" v-model="newReply" />
+                  <div class="media-content">
+                    <div class="field">
+                      <div class="control">
+                        <input
+                          class="input titleInput"
+                          type="text"
+                          placeholder="Title"
+                          v-model="newTweet.title"
+                        />
+                        <textarea
+                          class="textarea"
+                          type="text"
+                          placeholder="Text"
+                          rows="3"
+                          v-model="newTweet.description"
+                        />
+                      </div>
                     </div>
-                  </div>
-                  <div class="column is-3">
-                    <div class="sectionSubmit sectionIcons">
-                      <button
-                        v-on:click="saveReply()"
-                        :disabled="sendReply"
-                        class="button is-link is-rounded"
-                      >Reply</button>
+                    <div style="display: flow-root;">
+                      <div class="is-pulled-right">
+                        <button
+                          :disabled="sendTweet"
+                          v-on:click="saveTweet()"
+                          class="button is-link is-outlined"
+                        >Post</button>
+                      </div>
                     </div>
                   </div>
                 </div>
               </div>
+              <div v-for="tweet in tweets" v-bind:key="tweet.thread_id">
+                <div class="card" style="margin-top: 2px">
+                  <div class="card-content tweet" style="display: flex; width: 100%;">
+                    <figure class="media-left">
+                      <p class="image is-64x64 is-circle">
+                        <img
+                          alt="Image"
+                          src="http://qtwitter-demo.qcode.in/img/avatar-placeholder.svg"
+                          style="border-radius: 50%"
+                        />
+                      </p>
+                    </figure>
+                    <div class="media-content">
+                      <div class="messageTweet">
+                        <p class="titleTweet">{{ tweet.title }}</p>
+                        <p>{{ tweet.description }}</p>
+                      </div>
+                    </div>
+                    <div class="media-right">
+                      <i style="cursor: pointer;" class="fas fa-pen" v-on:click="openModal(tweet)"></i>
+                      <br />
+                      <br />
+                      <i
+                        style="cursor: pointer;"
+                        class="far fa-comment fa-1x"
+                        v-on:click="openComments(tweet)"
+                      ></i>
+                    </div>
+                  </div>
+                  <div :id="tweet.thread_id" style="display:none">
+                    <div
+                      v-for="comment in comments"
+                      v-bind:key="comment.replie_id"
+                      class="columns is-gapless is-vcentered repliesContainer"
+                    >
+                      <div class="column is-1"></div>
+                      <div class="column replyText">- {{comment.content}}</div>
+                      <div class="column is-2">
+                        <i class="fas fa-pen" v-on:click="openModelComment(comment)"></i>
+                      </div>
+                    </div>
+                    <div>
+                      <div class="columns is-gapless is-vcentered repliesContainer">
+                        <div class="column is-1"></div>
+                        <div class="column">
+                          <div class>
+                            <input class="input" type="text" placeholder="Reply" v-model="newReply" />
+                          </div>
+                        </div>
+                        <div class="column is-1">
+                          <div class="sectionSubmit sectionIcons">
+                            <button
+                              v-on:click="saveReply()"
+                              :disabled="sendReply"
+                              class="button is-link is-outlined"
+                            >
+                              <span class="icon has-text-info">
+                                <i class="fas fa-paper-plane"></i>
+                              </span>
+                            </button>
+                          </div>
+                        </div>
+                        <div class="column is-1"></div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="column is-3 info">
+          <div class="notification is-success" v-if="showNotificacion">
+            <button class="delete" v-on:click="closeNotification()"></button>
+            Post created successfully!
+          </div>
+          <div class="card">
+            <div class="card-content">
+              <div class="content">
+                Demo of a Discussion Board on
+                <b>Vue.js</b> and
+                <b>Golang</b>.
+                <br />
+                <br />
+                <a>@Christopher Delgado</a>.
+                <br />
+                <a>@Luis Sanchez</a>.
+                <br />
+                <a>@Jesus Ruiz</a>.
+                <br />
+                <br />
+                <small>22 Feb 2020</small>
+              </div>
             </div>
           </div>
         </div>
       </div>
-      <div class="column is-3 trends">
-        <article class="panel is-primary">
-          <p class="panel-heading">Trends for you</p>
-          <a class="panel-block">
-            <div>
-              <p class="subTitle">Trending</p>
-              <p>#ParoNacional</p>
+      <div class="modal" :class="{ 'is-active': showModal }">
+        <div class="modal-background"></div>
+        <div class="modal-card">
+          <header class="modal-card-head">
+            <p class="modal-card-title">Edit Post</p>
+            <button class="delete" aria-label="close" v-on:click="closeModal()"></button>
+          </header>
+          <section class="modal-card-body">
+            <div class="media">
+              <figure class="media-left">
+                <p class="image is-64x64 is-circle">
+                  <img
+                    alt="Image"
+                    src="http://qtwitter-demo.qcode.in/img/avatar-placeholder.svg"
+                    style="border-radius: 50%"
+                  />
+                </p>
+              </figure>
+              <div class="media-content">
+                <div class="field">
+                  <div class="control">
+                    <input
+                      class="input titleInput"
+                      type="text"
+                      placeholder="Title"
+                      v-model="editedTweet.title"
+                    />
+                    <textarea
+                      class="textarea"
+                      type="text"
+                      placeholder="Text"
+                      rows="3"
+                      v-model="editedTweet.description"
+                    />
+                  </div>
+                </div>
+              </div>
             </div>
-          </a>
-          <a class="panel-block">
-            <div>
-              <p class="subTitle">Trending</p>
-              <p>#AMLONoEstaSolo</p>
-            </div>
-          </a>
-          <a class="panel-block">
-            <div>
-              <p class="subTitle">Trending</p>
-              <p>#FeminicidasDetenidos</p>
-            </div>
-          </a>
-          <a class="panel-block">
-            <div>
-              <p class="subTitle">Trending</p>
-              <p>#LopezAceptamosTuRenuncia</p>
-            </div>
-          </a>
-        </article>
-      </div>
-    </div>
-    <div class="modal" :class="{ 'is-active': showModal }">
-      <div class="modal-background"></div>
-      <div class="modal-card">
-        <header class="modal-card-head">
-          <i class="fas fa-times fa-2x" v-on:click="closeModal()"></i>
-        </header>
-        <section class="modal-card-body">
-          <div class="infoTweet">
-            <div class="messageTweet">
-              <input
-                class="input titleTweet"
-                type="text"
-                placeholder="Title"
-                v-model="editedTweet.title"
-              />
-              <input
-                class="input"
-                type="text"
-                placeholder="Description"
-                v-model="editedTweet.description"
-              />
-            </div>
-          </div>
-        </section>
-        <footer class="modal-card-foot">
-          <button class="button is-success" v-on:click="updateTweet()">Save changes</button>
-          <button class="button" v-on:click="closeModal()">Cancel</button>
-        </footer>
+          </section>
+          <footer class="modal-card-foot">
+            <button class="button is-success" v-on:click="updateTweet()">Save changes</button>
+            <button class="button" v-on:click="closeModal()">Cancel</button>
+          </footer>
+        </div>
       </div>
     </div>
 
@@ -172,11 +205,12 @@
       <div class="modal-background"></div>
       <div class="modal-card">
         <header class="modal-card-head">
-          <i class="fas fa-times fa-2x" v-on:click="closeModelComment()"></i>
+          <p class="modal-card-title">Edit Replie</p>
+          <button class="delete" aria-label="close" v-on:click="closeModelComment()"></button>
         </header>
         <section class="modal-card-body">
           <div class="infoTweet">
-            <div class="messageTweet">
+            <div class>
               <input
                 class="input"
                 type="text"
@@ -213,6 +247,7 @@ export default {
       newTweet: "",
       showModal: false,
       showModalComment: false,
+      showNotificacion: false,
       editMode: false,
       newReply: "",
       selectedReply: {
@@ -285,6 +320,12 @@ export default {
       this.editedTweet.title = "";
       this.editedTweet.description = "";
     },
+    openNotification() {
+      this.showNotificacion = true;
+    },
+    closeNotification() {
+      this.showNotificacion = false;
+    },
     openComments(tweet) {
       const element = document.getElementById(tweet.thread_id);
 
@@ -331,7 +372,7 @@ export default {
           this.tweets = response.data.reverse();
           this.newTweet.title = "";
           this.newTweet.description = "";
-          alert("Thread created sucessfully!");
+          this.openNotification();
         });
       });
     },
