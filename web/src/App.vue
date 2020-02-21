@@ -196,6 +196,31 @@
         </div>
       </div>
     </div>
+
+    <div class="modal" :class="{ 'is-active': showModalComment }">
+      <div class="modal-background"></div>
+      <div class="modal-card">
+        <header class="modal-card-head">
+          <i class="fas fa-times fa-2x" v-on:click="closeModelComment()"></i>
+        </header>
+        <section class="modal-card-body">
+          <div class="infoTweet">
+            <div class="messageTweet">
+              <input
+                class="input"
+                type="text"
+                placeholder="Description"
+                v-model="selectedReply.content"
+              />
+            </div>
+          </div>
+        </section>
+        <footer class="modal-card-foot">
+          <button class="button is-success" v-on:click="updateReply()">Save Reply</button>
+          <button class="button" v-on:click="closeModelComment()">Cancel</button>
+        </footer>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -216,9 +241,13 @@ export default {
       comments: [],
       newTweet: "",
       showModal: false,
-      showComments: false,
+      showModalComment: false,
       editMode: false,
       newReply: "",
+      selectedReply: {
+        id: "",
+        content: ""
+      },
       selectedTweet: {
         id: 0,
         title: "",
@@ -257,6 +286,13 @@ export default {
       } else {
         return true;
       }
+    },
+    editReply: function() {
+      if (this.selectedReply !== "") {
+        return false;
+      } else {
+        return true;
+      }
     }
   },
   methods: {
@@ -264,7 +300,6 @@ export default {
       this.editMode = false;
     },
     openEditMode(comment) {
-      console.log(comment);
       this.editMode = true;
     },
     openModal(tweet) {
@@ -280,12 +315,12 @@ export default {
       this.editedTweet.description = "";
     },
     openComments(tweet) {
-      this.closeComments();
       const element = document.getElementById(tweet.thread_id);
 
       if (element.style.display != "none") {
         element.style.display = "none";
       } else {
+        this.closeComments();
         this.selectedTweet.id = tweet.thread_id;
         this.selectedTweet.title = tweet.title;
         this.selectedTweet.description = tweet.description;
@@ -304,6 +339,8 @@ export default {
     },
     closeComments() {
       this.newReply = "";
+      this.selectedReply.id = 0;
+      this.selectedReply.content = "";
       for (let i = 0; i <= this.tweets.length - 1; i++) {
         const item = document.getElementById(this.tweets[i].thread_id);
         if (item !== null) {
@@ -327,6 +364,7 @@ export default {
         });
       });
     },
+
     updateTweet() {
       const form = new FormData();
       form.append("title", this.editedTweet.title);
@@ -345,8 +383,6 @@ export default {
         });
     },
     saveReply() {
-      console.log(this.newReply);
-      console.log(this.selectedTweet);
       const form = new FormData();
       form.append("threadParent_id", this.selectedTweet.id);
       form.append("content", this.newReply);
@@ -366,22 +402,40 @@ export default {
           });
       });
     },
+    openModelComment(reply) {
+      this.showModalComment = true;
+      this.selectedReply.id = reply.replie_id;
+      this.selectedReply.content = reply.content;
+    },
+    closeModelComment() {
+      this.showModalComment = false;
+    },
     updateReply() {
       const form = new FormData();
-      form.append("content", "Update Reply with Vue");
-      axios.post("http://localhost:8081/api/replies/6", form).then(response => {
-        axios
-          .get(`http://localhost:8081/api/replies/thread/8`)
-          .then(response => {
-            // JSON responses are automatically parsed.
-            if (response.data == null) {
-              this.comments = [];
-            } else {
-              this.comments = response.data;
-              this.newReply = "";
-            }
-          });
-      });
+      form.append("content", this.selectedReply.content);
+      axios
+        .post(
+          "http://localhost:8081/api/replies/" + this.selectedReply.id,
+          form
+        )
+        .then(response => {
+          axios
+            .get(
+              `http://localhost:8081/api/replies/thread/` +
+                this.selectedTweet.id
+            )
+            .then(response => {
+              // JSON responses are automatically parsed.
+              if (response.data == null) {
+                this.comments = [];
+              } else {
+                this.comments = response.data;
+                this.newReply = "";
+              }
+            });
+        });
+
+      this.closeModelComment();
     }
   }
 };
