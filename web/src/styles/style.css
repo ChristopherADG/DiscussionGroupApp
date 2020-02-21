@@ -264,10 +264,29 @@
   min-height: 60px;
   margin-bottom: 10px;
   width: 100%;
+  display: block;
+}
+
+#app .repliesContainer .showComment {
+  width: 100%;
+  display: flex;
+}
+
+#app .repliesContainer .editComment {
+  width: 100%;
+  display: flex;
+}
+
+#app .repliesContainer .editComment .messageTweet {
+  margin-top: 0px;
 }
 
 #app .repliesContainer i {
   color: rgb(136, 153, 166);
+}
+
+#app .repliesContainer i:hover {
+  cursor: pointer;
 }
 
 .repliesContainer .replyText {
