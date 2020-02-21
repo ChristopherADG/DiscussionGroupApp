@@ -178,7 +178,7 @@
           <button v-if="editMode == false" class="button is-success" v-on:click="saveReply()">Reply</button>
 
           <div v-if="editMode == true">
-            <button class="button is-success" v-on:click="updateTweet()">Save changes</button>
+            <button class="button is-success" v-on:click="updateReply()">Save changes</button>
             <button class="button" v-on:click="exitEditMode()">Cancel</button>
           </div>
         </footer>
@@ -337,282 +337,28 @@ export default {
             }
           });
       });
-
-      // const form = new FormData();
-      // form.append("threadParent_id", this.selectedTweet.thread_id);
-      // form.append("content", this.newReply);
-      // axios.post("http://localhost:8081/api/replies", form);
-      // axios
-      //   .get(`http://localhost:8081/api/replies/thread/${this.selectedTweet.thread_id}`)
-      //   .then(response => {
-      //     this.comments = response.data.reverse();
-      //   });
-      //  this.closeComments()()
-      //  ----> Si se borra la informacion antes de hacer el get, se puede ocultar solo el modal
-      // this.showComments = false;
+    },
+    updateReply() {
+      const form = new FormData();
+      form.append("content", "Update Reply with Vue");
+      axios.post("http://localhost:8081/api/replies/6", form).then(response => {
+        axios
+          .get(`http://localhost:8081/api/replies/thread/8`)
+          .then(response => {
+            // JSON responses are automatically parsed.
+            if (response.data == null) {
+              this.comments = [];
+            } else {
+              this.comments = response.data;
+              this.newReply = "";
+            }
+          });
+      });
     }
   }
 };
 </script>
 
 <style>
-#app {
-  background-color: rgb(21, 32, 43);
-  height: 100%;
-}
-
-.columns {
-  height: 100%;
-}
-.column {
-  text-align: center;
-  border: 1px solid rgb(56, 68, 77);
-  height: 100%;
-}
-.trends {
-  height: auto;
-}
-.menuPrincipal {
-  text-align: left;
-  height: auto;
-}
-.menuPrincipalContainer {
-  padding-left: 3em;
-  padding-top: 2em;
-}
-.menuPrincipalContainer i {
-  margin-bottom: 25px;
-}
-.buttonsMenu .containerButton {
-  display: flex;
-  width: fit-content;
-}
-.buttonsMenu .containerButton:hover {
-  cursor: pointer;
-}
-.buttonsMenu .containerButton i {
-  margin-bottom: 0px;
-  padding-right: 15px;
-  color: rgba(29, 161, 242, 1);
-}
-.buttonsMenu .containerButton p {
-  font-size: 24px;
-  color: rgba(29, 161, 242, 1);
-  font-weight: bold;
-}
-
-.menuTweets {
-  text-align: left;
-}
-.menuTweets .sectionTitle {
-  padding-top: 2em;
-  padding-bottom: 1em;
-  padding-left: 1em;
-  border-bottom: 1px solid rgb(56, 68, 77);
-}
-.menuTweets .sectionTitle p {
-  color: white;
-  font-weight: bold;
-  font-size: 24px;
-}
-
-.menuTweets .sectionTweets {
-  padding-top: 2em;
-  flex-direction: column;
-}
-
-.sectionTweets .tweet {
-  /* display: flex; */
-  height: fit-content;
-  border-bottom: 1px solid rgb(56, 68, 77);
-}
-
-.menuTweets .sectionTweets .avatar {
-  color: rgb(136, 153, 166);
-}
-
-.menuTweets .sectionTweets .newTweet {
-  display: flex;
-  border-bottom: 10px solid rgb(37, 51, 65);
-}
-
-.menuTweets .sectionTweets .infoTweet {
-  text-align: left;
-}
-
-.menuTweets .sectionTweets .infoTweet .sectionSubmit .is-rounded {
-  background-color: rgb(29, 161, 242);
-}
-
-.messageTweet {
-  margin-top: 10px;
-  /* max-height: 150px;
-  overflow: scroll; */
-}
-
-.messageTweet p {
-  color: white;
-}
-
-.messageTweet input {
-  background-color: transparent;
-  border-top-style: hidden;
-  border-right-style: hidden;
-  border-left-style: hidden;
-  border-bottom-style: hidden;
-  color: white;
-}
-
-.messageTweet input::placeholder {
-  color: rgb(56, 68, 77);
-}
-
-.messageTweet .titleTweet {
-  font-size: 18px;
-  font-weight: bold;
-  text-decoration: underline;
-}
-
-.menuTweets .sectionTweets .infoTweet .sectionIcons {
-  padding-top: 10px;
-  color: rgb(136, 153, 166);
-  text-align: right;
-  padding-right: 25px;
-}
-
-.menuTweets .sectionTweets .infoTweet .sectionIcons i:hover {
-  cursor: pointer;
-}
-
-.menuTweets .sectionTweets .infoTweet .userName {
-  display: flex;
-  color: white;
-  justify-content: space-between;
-}
-.menuTweets .sectionTweets .infoTweet .userName i {
-  padding-right: 25px;
-  align-self: center;
-}
-.menuTweets .sectionTweets .infoTweet .userName i:hover {
-  cursor: pointer;
-}
-.menuTweets .sectionTweets .infoTweet .userName p {
-  padding-right: 10px;
-}
-
-.menuTweets .sectionTweets .infoTweet .userName .name {
-  font-weight: bolder;
-  font-size: 18px;
-}
-.menuTweets .sectionTweets .infoTweet .userName .user {
-  color: rgb(136, 153, 166);
-  font-size: 18px;
-}
-
-.menuTweets .column {
-  border: 0px;
-}
-
-.panel {
-  margin-top: 2em;
-  margin-left: 1em;
-  margin-right: 1em;
-  background-color: rgb(25, 39, 52);
-}
-
-#app .panel .panel-heading {
-  background-color: rgb(25, 39, 52);
-  border-bottom: 1px solid rgb(56, 68, 77);
-  text-align: left;
-  font-weight: bold;
-  padding-bottom: 10px;
-  padding-top: 10px;
-}
-
-#app .panel .panel-block {
-  border-bottom: 1px solid rgb(56, 68, 77);
-  color: white;
-  padding: 1em;
-}
-
-#app .panel .panel-block .subTitle {
-  text-align: left;
-  color: rgb(136, 153, 166);
-  font-size: 12px;
-}
-
-#app .panel .panel-block:hover {
-  background-color: #20303e;
-}
-
-#app .modal-background {
-  background-color: rgba(110, 118, 125, 0.4);
-}
-
-#app .modal-card-head {
-  background-color: rgb(21, 32, 43);
-  border-bottom: 0px;
-  border-bottom: 1px solid rgb(61, 84, 102);
-}
-
-#app .modal-card-head i {
-  color: rgba(29, 161, 242, 1);
-}
-
-#app .modal-card-head i:hover {
-  cursor: pointer;
-}
-
-#app .modal-card-body {
-  background-color: rgb(21, 32, 43);
-}
-#app .modal-card-foot {
-  background-color: rgb(21, 32, 43);
-  border-top: 0px;
-}
-#app .modal-card-foot .is-success {
-  background-color: rgba(29, 161, 242, 1);
-}
-
-.modalComments .column {
-  border: 0px;
-}
-
-.modalComments .messageTweet p {
-  text-align: left;
-}
-
-.modalComments .comentarioTweet {
-  text-align: left;
-}
-.modalComments .comentarioTweet p {
-  border-top: 1px solid rgb(56, 68, 77);
-  padding: 15px 0;
-  width: 100%;
-  font-size: 18px;
-  color: white;
-}
-
-.modalComments i {
-  padding: 15px 0;
-  color: white;
-}
-
-.modalComments i:hover {
-  cursor: pointer;
-}
-
-.modalComments .modal-card-foot input {
-  background-color: transparent;
-  border-top-style: hidden;
-  border-right-style: hidden;
-  border-left-style: hidden;
-  border-bottom-style: hidden;
-  color: white;
-}
-
-.modalComments .modal-card-foot input::placeholder {
-  color: rgb(56, 68, 77);
-  font-weight: bold;
-}
+@import "./styles/style.css";
 </style>
