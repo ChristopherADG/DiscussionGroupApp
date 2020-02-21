@@ -95,7 +95,7 @@
                       <div class="column is-1"></div>
                       <div class="column replyText">- {{comment.content}}</div>
                       <div class="column is-2">
-                        <i class="fas fa-pen"></i>
+                        <i class="fas fa-pen" v-on:click="openModelComment(comment)"></i>
                       </div>
                     </div>
                     <div>
@@ -129,6 +129,10 @@
           </div>
         </div>
         <div class="column is-3 info">
+          <div class="notification is-success" v-if="showNotificacion">
+            <button class="delete" v-on:click="closeNotification()"></button>
+            Post created successfully!
+          </div>
           <div class="card">
             <div class="card-content">
               <div class="content">
@@ -201,11 +205,12 @@
       <div class="modal-background"></div>
       <div class="modal-card">
         <header class="modal-card-head">
-          <i class="fas fa-times fa-2x" v-on:click="closeModelComment()"></i>
+          <p class="modal-card-title">Edit Replie</p>
+          <button class="delete" aria-label="close" v-on:click="closeModelComment()"></button>
         </header>
         <section class="modal-card-body">
           <div class="infoTweet">
-            <div class="messageTweet">
+            <div class>
               <input
                 class="input"
                 type="text"
@@ -242,6 +247,7 @@ export default {
       newTweet: "",
       showModal: false,
       showModalComment: false,
+      showNotificacion: false,
       editMode: false,
       newReply: "",
       selectedReply: {
@@ -314,6 +320,12 @@ export default {
       this.editedTweet.title = "";
       this.editedTweet.description = "";
     },
+    openNotification() {
+      this.showNotificacion = true;
+    },
+    closeNotification() {
+      this.showNotificacion = false;
+    },
     openComments(tweet) {
       const element = document.getElementById(tweet.thread_id);
 
@@ -360,7 +372,7 @@ export default {
           this.tweets = response.data.reverse();
           this.newTweet.title = "";
           this.newTweet.description = "";
-          alert("Thread created sucessfully!");
+          this.openNotification();
         });
       });
     },
