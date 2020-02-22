@@ -31,6 +31,11 @@ export default {
     showNotificacion: {
       required: true
     }
+  },
+  methods: {
+    closeNotification() {
+      this.$emit("closeNotification");
+    }
   }
 };
 </script>

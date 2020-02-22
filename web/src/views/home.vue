@@ -21,7 +21,10 @@
         </div>
       </div>
       <div class="column is-3 info">
-        <infoTeam :showNotificacion="showNotificacion" />
+        <infoTeam
+          :showNotificacion="showNotificacion"
+          v-on:closeNotification="closeNotification()"
+        />
       </div>
     </div>
     <div class="modal" :class="{ 'is-active': showModal }">
